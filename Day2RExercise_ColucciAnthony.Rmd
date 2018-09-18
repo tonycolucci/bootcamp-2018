@@ -101,3 +101,90 @@ cont_life_exp_stats <-
 cont_life_exp_stats(gapminder, "Asia")
 ```
 
+```{r}
+anydata <-
+  function (year) {if (any(gapminder$year == year)) {
+    print(paste0("This data frame contains data from ", year))
+  } else {
+    print(paste0("This data frame does not contain any data from ", year))
+  }
+  }
+
+anydata(2002)
+anydata(2012)
+```
+
+```{r}
+mean_low_le <-
+  function(df) {
+    countries <- unique(df$country)
+    for (i in countries) {
+      country_le <-mean(df$lifeExp[df$country == i])
+      if (country_le < mean(df$lifeExp)) {
+        print(paste0(i, " : ", country_le))
+      }
+    }
+  }
+
+mean_low_le(gapminder)
+```
+
+```{r}
+class_cont_le <-
+  function(df) {
+    for (i in unique(df$continent)) {
+      cont_le <- mean(df$lifeExp[df$continent == i])
+      if (cont_le > 70) {
+        print(paste0("The life expectancy in ", i, " is greater than 70"))
+      } else if (cont_le > 50) {
+        print(paste0("The life expectancy in ", i, " is between 50 and 70"))
+      } else {
+        print(paste0("The life expectancy in ", i, " is less than 50"))
+      }
+    }
+  }
+
+class_cont_le(gapminder)
+```
+
+```{r}
+df_info <- 
+  function(df) {
+    sapply(df, class)
+  }
+
+df_info(gapminder)
+```
+
+```{r}
+vec_info <-
+  function(vec, includeMed = FALSE) {
+    print(paste0("Mean: ", mean(vec)))
+    print(paste0("Std. Dev.: ", sd(vec)))
+    if (includeMed == TRUE) {
+      print(paste0("Median: ", median(vec)))
+    }
+  }
+
+v1 <- c(123412,241342,123213,32,12,3,123124)
+vec_info(v1, TRUE)
+```
+
+```{r}
+log_lm <-
+  function(df, dv, iv, year) {
+    ## First take the vector of log values for both our dependent and independent variables
+    dv_year <- df[[dv]][df$year == year]
+    iv_year <- df[[iv]][df$year == year]
+    log_dv <- log(dv_year)
+    log_iv <- log(iv_year)
+    
+    
+    
+    ## Now we can plot our log values to view the relationship
+    plot(log_iv, log_dv)
+  }
+
+log_lm(gapminder, "gdpPercap", "lifeExp", 1987)
+```
+
