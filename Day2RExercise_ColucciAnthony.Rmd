@@ -1,0 +1,103 @@
+---
+title: "R Day 2"
+author: "Tony Colucci"
+date: "9/18/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+here::here("data", "gapminder5.csv")
+
+gapminder <- read.csv(here::here("data", "gapminder5.csv"))
+```
+
+
+## Converting factors to characters
+
+```{r}
+gapminder$country <- as.character(gapminder$country)
+gapminder$continent <- as.character(gapminder$continent)
+str(gapminder)
+```
+
+```{r}
+obs <- 1:nrow(gapminder)
+
+for (i in obs) {
+  gapminder[i, "gdp"] <- gapminder[i, "pop"] * gapminder[i, "gdpPercap"]
+}
+```
+
+```{r}
+for (i in obs) {
+  gapminder[i, "log_gdpPercap"] <- log(gapminder[i, "gdpPercap"])
+  gapminder[i, "log_pop"] <- log(gapminder[i, "pop"[]])
+}
+```
+
+```{r}
+continents <- unique(gapminder$continent)
+for (i in continents) {
+  mean_leCont <- mean(gapminder$lifeExp[gapminder$continent == i],
+                      na.rm = TRUE)
+  print(paste0(i, " : ", mean_leCont))
+}
+
+```
+
+
+```{r}
+years <- unique(gapminder$year)
+for (i in continents) {
+  print(paste0("Continent : ", i))
+  for (j in years) {
+    sd_le <- sd(gapminder$lifeExp[gapminder$continent == i &
+                                    gapminder$year == j])
+    print(paste0(j, " : ", sd_le))
+  }
+}
+```
+
+```{r}
+i <- 1987
+
+while (i <= 2002) {
+  sd_le <- sd(gapminder$lifeExp[gapminder$year == i])
+  print(paste0(i," : ", sd_le))
+  i <- i + 5
+}
+```
+
+```{r}
+for (i in years) {
+  if (i >=1987) {
+    tmp <- mean(gapminder$pop[gapminder$year == i], na.rm = TRUE)
+    print(paste0(i, " : ", tmp))
+  } else {
+    print(paste0("Sorry ", i, " is before 1987"))
+  }
+}
+```
+
+```{r}
+cont_life_exp_stats <-
+  function(df, cont) {
+    le_mean <- mean(df$lifeExp[df$continent ==  cont])
+    le_median <- median(df$lifeExp[df$continent ==  cont])
+    le_min <- min(df$lifeExp[df$continent ==  cont])
+    le_max <- max(df$lifeExp[df$continent ==  cont])
+    
+    cat("Continent:", cont,
+        "\nMinimum:", le_min,
+        "\nMean", le_mean,
+        "\nMedian", le_median,
+        "\nMaximum", le_max)
+  }
+
+cont_life_exp_stats(gapminder, "Asia")
+```
+
