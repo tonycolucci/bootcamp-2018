@@ -297,6 +297,53 @@ head(tmp)</code></pre>
 ## 2 small_hydro       345 
 ## 3 biogas            234.
 ## 4 biomass           385.</code></pre>
+<pre class="r"><code>library(data.table)</code></pre>
+<pre><code>## 
+## Attaching package: 'data.table'</code></pre>
+<pre><code>## The following objects are masked from 'package:dplyr':
+## 
+##     between, first, last</code></pre>
+<pre><code>## The following objects are masked from 'package:reshape2':
+## 
+##     dcast, melt</code></pre>
+<pre class="r"><code>library(lubridate)</code></pre>
+<pre><code>## 
+## Attaching package: 'lubridate'</code></pre>
+<pre><code>## The following objects are masked from 'package:data.table':
+## 
+##     hour, isoweek, mday, minute, month, quarter, second, wday,
+##     week, yday, year</code></pre>
+<pre><code>## The following object is masked from 'package:base':
+## 
+##     date</code></pre>
+<pre class="r"><code>data_file &lt;- here::here(&quot;data&quot;, &quot;generation.csv&quot;)
+
+generation_df &lt;- read.csv(data_file, stringsAsFactors = F)
+
+generation_dt &lt;- fread(data_file)</code></pre>
+<pre class="r"><code>class(generation_df)</code></pre>
+<pre><code>## [1] &quot;data.frame&quot;</code></pre>
+<pre class="r"><code>class(generation_dt)</code></pre>
+<pre><code>## [1] &quot;data.table&quot; &quot;data.frame&quot;</code></pre>
+<pre class="r"><code>generation_dt[,small_hydro]</code></pre>
+<pre><code>##   [1] 297 297 297 294 295 301 379 385 405 339 262 260 260 301 299 335 352
+##  [18] 390 503 574 569 568 489 443 385 242 244 242 244 242 322 357 379 401
+##  [35] 279 246 230 225 228 310 371 445 503 550 546 547 467 419 315 274 232
+##  [52] 235 236 296 305 308 401 397 279 282 282 288 285 284 332 405 509 559
+##  [69] 562 502 478 430 329 231 239 240 233 250 305 347 403 357 280 280 279
+##  [86] 280 275 309 336 370 465 555 556 478 480 387 322 270 236 239 240 241
+## [103] 353 354 409 346 280 281 276 281 271 271 321 459 497 547 543 546 503
+## [120] 438 333 237 233 237 238 235 237 278 266 232 229 272 272 273 269 310
+## [137] 328 369 409 542 504 504 468 343 314 263 233 230 231 230 231 272 231
+## [154] 230 234 274 270 272 273 297 303 375 491 558 558 550 483 357</code></pre>
+<pre class="r"><code>class(generation_dt$datetime)</code></pre>
+<pre><code>## [1] &quot;character&quot;</code></pre>
+<pre class="r"><code>generation_dt[, datetime := as_datetime(datetime)]
+class(generation_dt$datetime)</code></pre>
+<pre><code>## [1] &quot;POSIXct&quot; &quot;POSIXt&quot;</code></pre>
+<pre class="r"><code>gen_dt_hrday &lt;- generation_dt[,.(total_renew = solar + wind), 
+                              by = .(day(datetime),hour(datetime))
+                              ]</code></pre>
 
 
 

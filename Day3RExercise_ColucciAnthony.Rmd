@@ -109,3 +109,32 @@ merged_energy %>%
 
 ```
 
+```{r}
+library(data.table)
+library(lubridate)
+
+data_file <- here::here("data", "generation.csv")
+
+generation_df <- read.csv(data_file, stringsAsFactors = F)
+
+generation_dt <- fread(data_file)
+```
+
+```{r}
+class(generation_df)
+class(generation_dt)
+
+generation_dt[,small_hydro]
+```
+
+```{r}
+class(generation_dt$datetime)
+generation_dt[, datetime := as_datetime(datetime)]
+class(generation_dt$datetime)
+
+gen_dt_hrday <- generation_dt[,.(total_renew = solar + wind), 
+                              by = .(day(datetime),hour(datetime))
+                              ]
+
+```
+
